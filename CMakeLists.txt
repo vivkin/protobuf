@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(protobuf VERSION 2.6.0)
+cmake_minimum_required(VERSION 2.8.12)
+project(protobuf)
 
 set(PROTOBUF_LITE_SOURCES
     src/google/protobuf/stubs/atomicops_internals_x86_gcc.cc
@@ -130,6 +130,7 @@ if(UNIX)
     target_link_libraries(protobuf_lite pthread)
 endif()
 add_library(protobuf STATIC ${PROTOBUF_SOURCES})
+target_include_directories(protobuf PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(protobuf protobuf_lite)
 add_library(libprotoc STATIC ${LIBPROTOC_SOURCES})
 target_link_libraries(libprotoc protobuf)
