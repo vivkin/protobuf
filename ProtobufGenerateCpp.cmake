@@ -1,0 +1,34 @@
+function(protobuf_generate_cpp SRCS HDRS)
+    foreach(FIL ${ARGN})
+        get_filename_component(ABS_FIL ${FIL} ABSOLUTE)
+        get_filename_component(ABS_PATH ${ABS_FIL} PATH)
+        list(FIND _protobuf_include_path ${ABS_PATH} _contains_already)
+        if(${_contains_already} EQUAL -1)
+            list(APPEND _protobuf_include_path -I ${ABS_PATH})
+        endif()
+    endforeach()
+
+    set(${SRCS})
+    set(${HDRS})
+    foreach(FIL ${ARGN})
+        get_filename_component(ABS_FIL ${FIL} ABSOLUTE)
+        get_filename_component(FIL_WE ${FIL} NAME_WE)
+
+        list(APPEND ${SRCS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc")
+        list(APPEND ${HDRS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h")
+
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
+            "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
+            COMMAND protoc
+            ARGS --cpp_out ${CMAKE_CURRENT_BINARY_DIR} ${_protobuf_include_path} ${ABS_FIL}
+            DEPENDS protoc ${ABS_FIL}
+            COMMENT "Running C++ protocol buffer compiler on ${FIL}"
+            VERBATIM
+        )
+    endforeach()
+
+    set_source_files_properties(${${SRCS}} ${${HDRS}} PROPERTIES GENERATED TRUE)
+    set(${SRCS} ${${SRCS}} PARENT_SCOPE)
+    set(${HDRS} ${${HDRS}} PARENT_SCOPE)
+endfunction()
