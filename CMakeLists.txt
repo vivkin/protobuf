@@ -49,7 +49,7 @@ set(PROTOBUF_SOURCES
     src/google/protobuf/compiler/parser.cc
 )
 
-set(LIBPROTOC_SOURCES
+set(PROTOC_SOURCES
     src/google/protobuf/compiler/code_generator.cc
     src/google/protobuf/compiler/command_line_interface.cc
     src/google/protobuf/compiler/plugin.cc
@@ -118,9 +118,6 @@ set(LIBPROTOC_SOURCES
     src/google/protobuf/compiler/java/java_doc_comment.cc
     src/google/protobuf/compiler/java/java_doc_comment.h
     src/google/protobuf/compiler/python/python_generator.cc
-)
-
-set(PROTOC_SOURCES
     src/google/protobuf/compiler/main.cc
 )
 
@@ -129,13 +126,20 @@ target_include_directories(protobuf_lite PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
 if(UNIX)
     target_link_libraries(protobuf_lite pthread)
 endif()
+
 add_library(protobuf STATIC ${PROTOBUF_SOURCES})
 target_include_directories(protobuf PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(protobuf protobuf_lite)
-add_library(libprotoc STATIC ${LIBPROTOC_SOURCES})
-target_link_libraries(libprotoc protobuf)
-add_executable(protoc ${PROTOC_SOURCES})
-target_link_libraries(protoc libprotoc)
+
+if(NOT CMAKE_CROSSCOMPILING)
+    option(WITH_PROTOC "Build protocol buffers compiler" ON)
+endif()
+
+if(WITH_PROTOC)
+    add_executable(protoc ${PROTOC_SOURCES})
+    target_include_directories(protobuf PRIVATE src ${CMAKE_CURRENT_BINARY_DIR})
+    target_link_libraries(protoc protobuf)
+endif()
 
 if(WIN32)
     configure_file(vsprojects/config.h config.h COPYONLY)
