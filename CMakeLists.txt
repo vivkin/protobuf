@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 2.8.12)
 project(protobuf)
 
 set(PROTOBUF_LITE_SOURCES
-    src/google/protobuf/stubs/atomicops_internals_x86_gcc.cc
-    src/google/protobuf/stubs/atomicops_internals_x86_msvc.cc
+    #src/google/protobuf/stubs/atomicops_internals_x86_gcc.cc
+    #src/google/protobuf/stubs/atomicops_internals_x86_msvc.cc
     src/google/protobuf/stubs/common.cc
-    src/google/protobuf/stubs/once.cc
+    #src/google/protobuf/stubs/once.cc
     src/google/protobuf/stubs/hash.h
     src/google/protobuf/stubs/map_util.h
     src/google/protobuf/stubs/shared_ptr.h
@@ -40,7 +40,7 @@ set(PROTOBUF_SOURCES
     src/google/protobuf/text_format.cc
     src/google/protobuf/unknown_field_set.cc
     src/google/protobuf/wire_format.cc
-    src/google/protobuf/io/gzip_stream.cc
+    #src/google/protobuf/io/gzip_stream.cc
     src/google/protobuf/io/printer.cc
     src/google/protobuf/io/strtod.cc
     src/google/protobuf/io/tokenizer.cc
@@ -121,14 +121,19 @@ set(PROTOC_SOURCES
     src/google/protobuf/compiler/main.cc
 )
 
-add_library(protobuf_lite STATIC ${PROTOBUF_LITE_SOURCES})
-target_include_directories(protobuf_lite PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
-if(UNIX)
-    target_link_libraries(protobuf_lite pthread)
+if(MSVC)
+    configure_file(vsprojects/config.h config.h COPYONLY)
+    add_compile_options(/wd4018 /wd4146 /wd4244 /wd4251 /wd4267 /wd4305 /wd4355 /wd4800 /wd4996)
+else()
+    configure_file(config-unix.h.in config.h COPYONLY)
+    add_compile_options(-Wno-unused-function)
 endif()
 
+add_library(protobuf_lite STATIC ${PROTOBUF_LITE_SOURCES})
+target_compile_definitions(protobuf_lite PUBLIC GOOGLE_PROTOBUF_NO_RTTI GOOGLE_PROTOBUF_NO_THREAD_SAFETY GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER)
+target_include_directories(protobuf_lite PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
+
 add_library(protobuf STATIC ${PROTOBUF_SOURCES})
-target_include_directories(protobuf PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(protobuf protobuf_lite)
 
 if(WITH_PROTOC)
@@ -140,13 +145,6 @@ endif()
 option(BUILD_PROTOC "Build protocol buffers compiler" ON)
 if(BUILD_PROTOC)
     add_executable(protoc ${PROTOC_SOURCES})
-    target_include_directories(protobuf PRIVATE src ${CMAKE_CURRENT_BINARY_DIR})
-    target_link_libraries(protoc protobuf)
+    target_link_libraries(protoc protobuf_lite protobuf)
     export(TARGETS protoc FILE ImportProtoc.cmake)
-endif()
-
-if(WIN32)
-    configure_file(vsprojects/config.h config.h COPYONLY)
-else()
-    configure_file(config-unix.h.in config.h COPYONLY)
 endif()
