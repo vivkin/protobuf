@@ -130,7 +130,7 @@ else()
 endif()
 
 add_library(protobuf_lite STATIC ${PROTOBUF_LITE_SOURCES})
-target_compile_definitions(protobuf_lite PUBLIC GOOGLE_PROTOBUF_NO_RTTI GOOGLE_PROTOBUF_NO_THREAD_SAFETY GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER)
+target_compile_definitions(protobuf_lite PUBLIC GOOGLE_PROTOBUF_NO_RTTI GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER)
 target_include_directories(protobuf_lite PUBLIC src ${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(protobuf STATIC ${PROTOBUF_SOURCES})
