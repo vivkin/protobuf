@@ -5,14 +5,17 @@ set(PROTOBUF_LITE_SOURCES
     #src/google/protobuf/stubs/atomicops_internals_x86_gcc.cc
     #src/google/protobuf/stubs/atomicops_internals_x86_msvc.cc
     src/google/protobuf/stubs/common.cc
-    #src/google/protobuf/stubs/once.cc
+    src/google/protobuf/stubs/once.cc
     src/google/protobuf/stubs/hash.h
     src/google/protobuf/stubs/map_util.h
     src/google/protobuf/stubs/shared_ptr.h
     src/google/protobuf/stubs/stringprintf.cc
     src/google/protobuf/stubs/stringprintf.h
+    src/google/protobuf/arena.cc
+    src/google/protobuf/arenastring.cc
     src/google/protobuf/extension_set.cc
     src/google/protobuf/generated_message_util.cc
+    src/google/protobuf/map_field.cc
     src/google/protobuf/message_lite.cc
     src/google/protobuf/repeated_field.cc
     src/google/protobuf/wire_format_lite.cc
@@ -71,6 +74,8 @@ set(PROTOC_SOURCES
     src/google/protobuf/compiler/cpp/cpp_generator.cc
     src/google/protobuf/compiler/cpp/cpp_helpers.cc
     src/google/protobuf/compiler/cpp/cpp_helpers.h
+    src/google/protobuf/compiler/cpp/cpp_map_field.cc
+    src/google/protobuf/compiler/cpp/cpp_map_field.h
     src/google/protobuf/compiler/cpp/cpp_message.cc
     src/google/protobuf/compiler/cpp/cpp_message.h
     src/google/protobuf/compiler/cpp/cpp_message_field.cc
@@ -85,9 +90,9 @@ set(PROTOC_SOURCES
     src/google/protobuf/compiler/java/java_context.cc
     src/google/protobuf/compiler/java/java_context.h
     src/google/protobuf/compiler/java/java_enum.cc
-    src/google/protobuf/compiler/java/java_enum.h
     src/google/protobuf/compiler/java/java_enum_field.cc
     src/google/protobuf/compiler/java/java_enum_field.h
+    src/google/protobuf/compiler/java/java_enum.h
     src/google/protobuf/compiler/java/java_extension.cc
     src/google/protobuf/compiler/java/java_extension.h
     src/google/protobuf/compiler/java/java_field.cc
@@ -101,10 +106,12 @@ set(PROTOC_SOURCES
     src/google/protobuf/compiler/java/java_helpers.h
     src/google/protobuf/compiler/java/java_lazy_message_field.cc
     src/google/protobuf/compiler/java/java_lazy_message_field.h
+    src/google/protobuf/compiler/java/java_map_field.cc
+    src/google/protobuf/compiler/java/java_map_field.h
     src/google/protobuf/compiler/java/java_message.cc
-    src/google/protobuf/compiler/java/java_message.h
     src/google/protobuf/compiler/java/java_message_field.cc
     src/google/protobuf/compiler/java/java_message_field.h
+    src/google/protobuf/compiler/java/java_message.h
     src/google/protobuf/compiler/java/java_name_resolver.cc
     src/google/protobuf/compiler/java/java_name_resolver.h
     src/google/protobuf/compiler/java/java_primitive_field.cc
